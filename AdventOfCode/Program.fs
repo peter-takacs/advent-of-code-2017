@@ -109,12 +109,32 @@ let getStoredValue (computed: Map<(int * int), int>, (x,y)) =
                  
 let spiralCoordinates x = 
     Seq.fold (fun (px,py) _ -> nextStepCoordinates(px,py)) (0,0) [1..x-1]   
-
-        
+    
 let manhattanDistance (x:int,y:int) = Math.Abs(x) + Math.Abs(y);
 
-let getStoredValueMap n = 
-    Seq.fold (fun computed (x,y) -> Map.add (x,y) (getStoredValue (computed, (x,y)))) (new Map<(int * int), int>()) 
+let findNextOddQuadraticNumber n =
+    Seq.initInfinite (fun i -> (2*i+1,(2*i+1)*(2*i+1)))  |>
+    Seq.find (fun (a,aa) -> aa>=n) |>
+    fst
+
+let whereIs n = 
+    match findNextOddQuadraticNumber(n) with
+    | x when x*x = n -> (x/2,-x/2)
+    | x when x*x - n <= x - 1  -> (x/2-(x*x-n), -x/2)
+    | x when x*x - n >= x-1 && x*x - n < 2*(x-1) -> (-x/2, -x/2 + (x*x - n) - (x-1))
+    | x when x*x - n >= 2*(x-1) && x*x - n <= 3*(x-1) -> (-x/2 + (x*x - n) - 2*(x-1), x/2)
+    | x when x*x - n > 3*(x-1) -> (x/2, x/2 - (x*x - n) + 3*(x-1))
+
+let findFirstLargerThan input =
+    Seq.unfold (fun (computed, i, lastWritten) -> 
+        if lastWritten > input then None 
+        else Some (getStoredValue (computed, whereIs i), (Map.add (whereIs i) (getStoredValue (computed, whereIs i)) computed, i+1, getStoredValue (computed, whereIs i)))) 
+        (Map.add (0,0) 1 Map.empty, 2, 1) |>
+    Seq.last
+
+
+
+    
 
 [<EntryPoint>]
 let main argv = 
@@ -122,5 +142,6 @@ let main argv =
     printfn "Day 1/2: %i" (inverseCaptcha (d1input,  d1input.Length / 2 ))
     printfn "Day 2/1: %i" (checksum d2input)
     printfn "Day 2/2: %i" (divisibleChecksum d2input)
-    printfn "Day 3/1: %i" (spiralCoordinates 347991 |> manhattanDistance)
+    printfn "Day 3/1: %i" (whereIs 347991 |> manhattanDistance)
+    printfn "Day 3/2: %A" (findFirstLargerThan 347991)
     0
