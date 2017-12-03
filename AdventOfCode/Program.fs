@@ -98,11 +98,23 @@ let nextStepCoordinates (x,y) =
         | (x,y) when y > 0 && x <= y && -x < y -> (x-1, y)    // top row
         | (x,y) when x > 0 && y <= x && y >= -x -> (x, y+1)     // right column
         | (x,y) when x < 0 && y <= -x && y >= x -> (x, y-1)     // left column
-                
+
+let getOrDefault (m : Map<'a,'b>, key: 'a, def : 'b) = if m.ContainsKey(key) then m.[key] else def; 
+
+let getStoredValue (computed: Map<(int * int), int>, (x,y)) = 
+    Seq.allPairs [-1..1] [-1..1] |>
+    without (0,0) |>
+    Seq.map (fun (offsetX, offsetY) -> getOrDefault (computed, (x + offsetX, y + offsetY), 0)) |>
+    Seq.sum
+                 
 let spiralCoordinates x = 
-    Seq.fold (fun (px,py) _ -> nextStepCoordinates(px,py)) (0,0) [1..x-1]
+    Seq.fold (fun (px,py) _ -> nextStepCoordinates(px,py)) (0,0) [1..x-1]   
+
         
 let manhattanDistance (x:int,y:int) = Math.Abs(x) + Math.Abs(y);
+
+let getStoredValueMap n = 
+    Seq.fold (fun computed (x,y) -> Map.add (x,y) (getStoredValue (computed, (x,y)))) (new Map<(int * int), int>()) 
 
 [<EntryPoint>]
 let main argv = 
