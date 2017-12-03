@@ -87,10 +87,28 @@ let divisibleChecksum input =
     Seq.map (fun (a,b) -> a/b) |>
     Seq.sum
 
+let nextStepCoordinates (x,y) =
+    match (x,y) with
+        | (0,0) -> (1,0)
+        | (x,y) when x > 0 && y < 0 && x = -y + 1 -> (x, y+1) // bottom right, go up
+        | (x,y) when x < 0 && y < 0 && y = x  -> (x + 1, y)    // bottom left, go right
+        | (x,y) when x < 0 && y > 0 && x = -y -> (x, y-1)     // top left, go down
+        | (x,y) when x > 0 && y > 0 && y = x -> (x-1, y)      // top right, go left
+        | (x,y) when y < 0 && x >= y && x <= -y -> (x+1, y)    // bottom row
+        | (x,y) when y > 0 && x <= y && -x < y -> (x-1, y)    // top row
+        | (x,y) when x > 0 && y <= x && y >= -x -> (x, y+1)     // right column
+        | (x,y) when x < 0 && y <= -x && y >= x -> (x, y-1)     // left column
+                
+let spiralCoordinates x = 
+    Seq.fold (fun (px,py) _ -> nextStepCoordinates(px,py)) (0,0) [1..x-1]
+        
+let manhattanDistance (x:int,y:int) = Math.Abs(x) + Math.Abs(y);
+
 [<EntryPoint>]
 let main argv = 
     printfn "Day 1/1: %i" (inverseCaptcha (d1input,  1 ))
     printfn "Day 1/2: %i" (inverseCaptcha (d1input,  d1input.Length / 2 ))
     printfn "Day 2/1: %i" (checksum d2input)
     printfn "Day 2/2: %i" (divisibleChecksum d2input)
+    printfn "Day 3/1: %i" (spiralCoordinates 347991 |> manhattanDistance)
     0
