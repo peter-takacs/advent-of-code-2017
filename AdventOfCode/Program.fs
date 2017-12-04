@@ -2,6 +2,7 @@
 open Day1
 open Day2
 open Day3
+open Day4
 open System
 open System.Text.RegularExpressions
 
@@ -15,4 +16,6 @@ let main argv =
     printfn "Day 2/2: %i" (divisibleChecksum d2input)
     printfn "Day 3/1: %i" (whereIs 347991 |> manhattanDistance)
     printfn "Day 3/2: %i" (findFirstLargerThan 347991)
+    printfn "Day 4/1: %i" (d4input |> toTable |> withoutDuplicatesInRows |> Seq.length)
+    printfn "Day 4/2: %i" (d4input |> toTable |> withoutAnagramRows |> Seq.length)
     0

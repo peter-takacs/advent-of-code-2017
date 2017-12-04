@@ -30,12 +30,14 @@ let findEvenlyDivisible (s : seq<int>) =
 let checksum input =
     input |>
     toTable |>
+    Seq.map (Seq.map int) |>
     Seq.map differenceOfExtremes |>
     Seq.sum
 
 let divisibleChecksum input =
     input |>
     toTable |>
+    Seq.map (Seq.map int) |>
     Seq.map findEvenlyDivisible |>
     Seq.map (fun (a,b) -> a/b) |>
     Seq.sum
