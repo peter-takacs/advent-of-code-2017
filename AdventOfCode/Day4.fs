@@ -515,8 +515,8 @@ huo esajup ouj oju ujo
 eeeu hwvsk jfkmds okhi pogskfm itdlbll
 lpyubo dylpfb iehwug decj ntidy cuygyg lalkb iutu oxgm imn"""
 
-let isDistinct row = Seq.distinct row |> Seq.length |> eq <| Seq.length row
-let isAnagram a b = (Seq.sort a |> Seq.compareWith comp <| Seq.sort b) |> eq 0;
+let isDistinct row = (Seq.distinct row |> Seq.compareWith comp <| row) |> eq 0
+let isAnagram a b = (Seq.sort a |> Seq.compareWith comp <| Seq.sort b) |> eq 0
 let rec hasAnagram row =
     match row with
     | [] -> false
