@@ -3,6 +3,7 @@ open Day1
 open Day2
 open Day3
 open Day4
+open Day5
 open System
 open System.Text.RegularExpressions
 
@@ -18,4 +19,6 @@ let main argv =
     printfn "Day 3/2: %i" (findFirstLargerThan 347991)
     printfn "Day 4/1: %i" (d4input |> toTable |> withoutDuplicatesInRows |> Seq.length)
     printfn "Day 4/2: %i" (d4input |> toTable |> withoutAnagramRows |> Seq.length)
+    printfn "Day 5/1: %i" (Array.copy d5input |> iterateUntilOut (fun i -> i+1))
+    printfn "Day 5/2: %i" (Array.copy d5input |> iterateUntilOut (fun i -> if i>2 then i-1 else i+1))
     0
