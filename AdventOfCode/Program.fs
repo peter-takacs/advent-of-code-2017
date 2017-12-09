@@ -4,6 +4,7 @@ open Day2
 open Day3
 open Day4
 open Day5
+open Day6
 open System
 open System.Text.RegularExpressions
 
@@ -21,4 +22,6 @@ let main argv =
     printfn "Day 4/2: %i" (d4input |> toTable |> withoutAnagramRows |> Seq.length)
     printfn "Day 5/1: %i" (Array.copy d5input |> iterateUntilOut (fun i -> i+1))
     printfn "Day 5/2: %i" (Array.copy d5input |> iterateUntilOut (fun i -> if i>2 then i-1 else i+1))
+    printfn "Day 6/1: %i" <| (Seq.length  <| numberOfStepsUntilLoop d6input)    
+    printfn "Day 6/2: %i" <| (loopLength d6input |> (+) <| 1)
     0
