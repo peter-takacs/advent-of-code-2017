@@ -2,6 +2,7 @@
 open System
 open System.Text.RegularExpressions
 open FSharpx.Collections
+open FParsec
 
 let newlines = new Regex("\r?\n")
 let spaces = new Regex("\s+")
@@ -12,9 +13,21 @@ let toTable (input :string ) =
 
 let flatten seqOfSeq = seq { for seq in seqOfSeq do yield! seq}
 
+let rec values l = 
+    match l with
+    | [] -> []
+    | Some(x) :: t -> x :: values t
+    | None :: t -> values t
+
 let without e s = Seq.filter (fun x -> x <> e) s
 
 let getOrDefault (m : Map<'a,'b>, key: 'a, def : 'b) = if m.ContainsKey(key) then m.[key] else def; 
+
+let parseOrException parser input = 
+    let output = run parser input;
+    match output with
+    | Success(result, _, _) -> result;
+    
 
 let eq a b = a=b
 let comp a b = 

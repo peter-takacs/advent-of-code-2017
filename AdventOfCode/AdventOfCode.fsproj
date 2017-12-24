@@ -62,11 +62,19 @@
     <Compile Include="Day4.fs" />
     <Compile Include="Day5.fs" />
     <Compile Include="Day6.fs" />
+    <Compile Include="Day7.fs" />
     <Compile Include="Program.fs" />
     <None Include="App.config" />
     <Content Include="packages.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="FParsec, Version=1.0.0.0, Culture=neutral, PublicKeyToken=40ccfc0a09edbb5d">
+      <HintPath>..\packages\FParsec.1.0.4-RC\lib\net40-client\FParsec.dll</HintPath>
+    </Reference>
+    <Reference Include="FParsecCS, Version=1.0.0.0, Culture=neutral, PublicKeyToken=40ccfc0a09edbb5d">
+      <HintPath>..\packages\FParsec.1.0.4-RC\lib\net40-client\FParsecCS.dll</HintPath>
+    </Reference>
     <Reference Include="FSharp.Core">
       <HintPath>..\packages\FSharp.Core.4.2.3\lib\net45\FSharp.Core.dll</HintPath>
     </Reference>
