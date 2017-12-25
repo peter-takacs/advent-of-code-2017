@@ -3,7 +3,16 @@ open FParsec
 open System.Text
 open Common
 
-type Node = {name: string; weight: int; children: string list option}
+
+type Node(name: string, weight: int, children: string list option) =
+    member x.Name = name
+    member x.Weight = weight
+    member x.Children = children
+type TotalWeightedNode(name: string, weight: int, children: TotalWeightedNode seq, totalWeight: int) =
+    member x.Name = name
+    member x.Weight = weight
+    member x.Children = children
+    member x.TotalWeight = totalWeight
 
 let isAsciiIdStart c =
     isAsciiLetter c || c = '_'
@@ -16,15 +25,59 @@ let nodeName = identifier (IdentifierOptions(isAsciiIdStart    = isAsciiIdStart,
 let nameList = many (nodeName .>> optional( pchar ',' .>> FParsec.CharParsers.spaces))
 let children = pstring "->" >>. FParsec.CharParsers.spaces >>. nameList
 let relation = pipe3 (nodeName .>> FParsec.CharParsers.spaces ) (pstring "(" >>. pint32 .>> pstring ")" .>> FParsec.CharParsers.spaces ) (opt children) 
-                (fun name weight children -> {name=name;weight=weight;children=children})
+                (fun name weight children -> new Node(name, weight, children))
 
 let parseLines ln = newlines.Split ln |> Seq.map (parseOrException relation)
 
+let toMap (nodeList: Node seq) = Seq.map (fun (n : Node) -> (n.Name, n)) nodeList |> Map.ofSeq 
+
 let findRoot nodes = 
-    let allChildren = Seq.map (fun {name=_;weight=_;children=c} -> c) nodes |> List.ofSeq |> values |> flatten |> Set.ofSeq;
-    nodes |> Seq.find (fun {name=n;weight=_;children=_} -> not <| Set.contains n allChildren) 
+    let allChildren = Seq.map (fun (n : Node) -> n.Children) nodes |> List.ofSeq |> values |> flatten |> Set.ofSeq;
+    nodes |> Seq.find (fun (n: Node) -> not <| Set.contains n.Name allChildren)
+
+let rec calculateTotalWeights (nodes : Map<string,Node>) (root : Node) =
+    match root.Children with
+    | None -> new TotalWeightedNode(root.Name, root.Weight, List.empty, root.Weight)
+    | Some(children) ->
+        let weightedChildren = children |> Seq.map (fun n -> Map.find n nodes) |> Seq.map (calculateTotalWeights nodes);
+        new TotalWeightedNode(root.Name, 
+            root.Weight, weightedChildren, 
+            (Seq.map (fun (n : TotalWeightedNode) -> n.TotalWeight) weightedChildren |> Seq.sum) + root.Weight)
+
+
+let isBalanced (root: TotalWeightedNode) = 
+    if Seq.isEmpty root.Children then true
+    else (Seq.map (fun (n : TotalWeightedNode) -> n.TotalWeight) root.Children |> Seq.distinct |> Seq.length) = 1
+ 
+
+let rec getWeightDifference (root: TotalWeightedNode) =
+    Seq.groupBy (fun (n: TotalWeightedNode) -> n.TotalWeight) root.Children |>
+    Seq.sortBy (fun (_, s) -> Seq.length s) |>    
+    (fun ss ->
+        let oddOneOut = Seq.head ss |> snd |> Seq.head;
+        if isBalanced oddOneOut then (Seq.skip 1 ss |> Seq.head |> snd |> Seq.head).TotalWeight - (oddOneOut.TotalWeight - oddOneOut.Weight)
+        else getWeightDifference oddOneOut)
+ 
+let getImbalancedWeight nodeList = 
+    let root = findRoot nodeList;
+    let weightedTree = calculateTotalWeights (toMap nodeList) (findRoot nodeList);
+    getWeightDifference weightedTree
     
     
+let d7test = """pbga (66)
+xhth (57)
+ebii (61)
+havc (66)
+ktlj (57)
+fwft (72) -> ktlj, cntj, xhth
+qoyq (66)
+padx (45) -> pbga, havc, qoyq
+tknk (41) -> ugml, padx, fwft
+jptl (61)
+ugml (68) -> gyxo, ebii, jptl
+gyxo (61)
+cntj (57)"""   
+
 let d7input = """jovejmr (40)
 fesmk (24)
 gwhfv (74)
