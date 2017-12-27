@@ -22,6 +22,7 @@ let isAsciiIdContinue c =
 
 let nodeName = identifier (IdentifierOptions(isAsciiIdStart    = isAsciiIdStart,
                               isAsciiIdContinue = isAsciiIdContinue))
+                              
 let nameList = many (nodeName .>> optional( pchar ',' .>> FParsec.CharParsers.spaces))
 let children = pstring "->" >>. FParsec.CharParsers.spaces >>. nameList
 let relation = pipe3 (nodeName .>> FParsec.CharParsers.spaces ) (pstring "(" >>. pint32 .>> pstring ")" .>> FParsec.CharParsers.spaces ) (opt children) 

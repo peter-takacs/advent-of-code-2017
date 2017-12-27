@@ -7,6 +7,14 @@ open FParsec
 let newlines = new Regex("\r?\n")
 let spaces = new Regex("\s+")
 
+let isAsciiIdStart c =
+    isAsciiLetter c || c = '_'
+
+let isAsciiIdContinue c =
+    isAsciiLetter c || isDigit c || c = '_' || c = '\''
+
+let parsename : Parser<string, unit> = identifier (IdentifierOptions(isAsciiIdStart = isAsciiIdStart, isAsciiIdContinue = isAsciiIdContinue))
+
 let toTable (input :string ) =
     newlines.Split input |>    
     Seq.map (spaces.Split >> List.ofSeq)    
@@ -27,7 +35,7 @@ let parseOrException parser input =
     let output = run parser input;
     match output with
     | Success(result, _, _) -> result;
-    
+    | Failure(errorMsg, _, _) -> printfn "Failure: %s" errorMsg; raise (new Exception(errorMsg));
 
 let eq a b = a=b
 let comp a b = 

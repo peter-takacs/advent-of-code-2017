@@ -6,6 +6,7 @@ open Day4
 open Day5
 open Day6
 open Day7
+open Day8
 open System
 open System.Text.RegularExpressions
 
@@ -27,4 +28,5 @@ let main argv =
     printfn "Day 6/2: %i" <| (loopLength d6input |> (+) <| 1)
     printfn "Day 7/1: %s" <| (d7input |> parseLines |> findRoot |> (fun (n: Node) -> n.Name))
     printfn "Day 7/2: %i" <| (d7input |> parseLines |> getImbalancedWeight)
+    printfn "Day 8/1: %i" <| (d8input |> parse |> getLargestRegister)
     0
