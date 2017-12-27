@@ -7,6 +7,7 @@ open Day5
 open Day6
 open Day7
 open Day8
+open Day9
 open System
 open System.Text.RegularExpressions
 
@@ -29,4 +30,7 @@ let main argv =
     printfn "Day 7/1: %s" <| (d7input |> parseLines |> findRoot |> (fun (n: Node) -> n.Name))
     printfn "Day 7/2: %i" <| (d7input |> parseLines |> getImbalancedWeight)
     printfn "Day 8/1: %i" <| (d8input |> parse |> getLargestRegister)
+    printfn "Day 8/2: %i" <| (d8input |> parse |> getLargestNumberHeld)
+    printfn "Day 9/1: %i" <| (d9input |> parseGroups |> calculateScore 1)
+    printfn "Day 9/2: %i" <| (d9input |> parseGroups |> calculateGarbageLength)
     0

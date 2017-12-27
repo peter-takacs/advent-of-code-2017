@@ -1056,7 +1056,13 @@ let step registers (instruction : Instruction) =
         else registers
         
 let simulate instructions =
-    Seq.fold step Map.empty instructions
+    Seq.fold 
+        (fun (state, maximalValueSeen) instruction -> 
+            (step state instruction, max maximalValueSeen <| getOrDefault(state, instruction.target, 0)))
+        (Map.empty, 0) instructions
     
 let getLargestRegister instructions =
-    simulate instructions |> Map.toSeq |> Seq.map (fun (_,v) -> v) |> Seq.max
+    simulate instructions |> fst |> Map.toSeq |> Seq.map (fun (_,v) -> v) |> Seq.max
+    
+let getLargestNumberHeld instructions = 
+    simulate instructions |> snd 
