@@ -52,3 +52,7 @@ let rec generate seed step =
 let rec foldWhile (condition : FoldCondition<'State, 'Element>) (fold : 'State -> 'Element -> 'State) state (sequence : seq<'Element>) =
         if condition state (Seq.head sequence) then Seq.empty
         else seq{yield state; yield! foldWhile condition fold (fold state (Seq.head sequence)) (Seq.tail <| Seq.cache sequence)}
+
+let skipOrEmpty count lst = 
+    if count < List.length lst then List.skip count lst
+    else []
