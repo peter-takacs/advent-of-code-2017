@@ -9,6 +9,7 @@ open Day7
 open Day8
 open Day9
 open Day10
+open Day11
 open System
 open System.Text.RegularExpressions
 
@@ -36,4 +37,6 @@ let main argv =
     printfn "Day 9/2: %i" <| (d9input |> parseGroups |> calculateGarbageLength)
     printfn "Day 10/1: %i" <| (doHash (d10input.Split(',') |> Seq.map int) |> List.take 2 |> List.reduce (*))
     printfn "Day 10/2: %s" <| (hashText d10input)
+    printfn "Day 11/1: %i" <| (distance d11input)
+    printfn "Day 11/2: %i" <| (maximalDistance d11input)
     0
