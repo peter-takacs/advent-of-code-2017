@@ -34,5 +34,6 @@ let main argv =
     printfn "Day 8/2: %i" <| (d8input |> parse |> getLargestNumberHeld)
     printfn "Day 9/1: %i" <| (d9input |> parseGroups |> calculateScore 1)
     printfn "Day 9/2: %i" <| (d9input |> parseGroups |> calculateGarbageLength)
-    printfn "Day 10/1: %A" <| (doHash d10input)
+    printfn "Day 10/1: %i" <| (doHash (d10input.Split(',') |> Seq.map int) |> List.take 2 |> List.reduce (*))
+    printfn "Day 10/2: %s" <| (hashText d10input)
     0
