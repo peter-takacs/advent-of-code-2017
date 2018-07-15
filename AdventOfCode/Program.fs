@@ -41,4 +41,5 @@ let main argv =
     printfn "Day 11/1: %i" <| (distance d11input)
     printfn "Day 11/2: %i" <| (maximalDistance d11input)
     printfn "Day 12/1: %i" <| (getReachableNodes d12input 0 |> Set.count)
+    printfn "Day 12/2: %i" <| (partition d12input |> Seq.length)
     0

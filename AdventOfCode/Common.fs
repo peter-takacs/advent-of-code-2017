@@ -42,6 +42,8 @@ let comp a b =
     if a > b then 1
     elif a < b then -1
     else 0
+ 
+let inc i = i + 1
 
 let flip f a b = f b a
 

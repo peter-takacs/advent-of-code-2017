@@ -2036,3 +2036,18 @@ let rec walk processed remaining map =
 let getReachableNodes input node =
     parseInput input |>
     walk Set.empty [node]
+
+let processNextGroup groups processed startingNode map =
+    let group = walk Set.empty [startingNode] map;
+    (group :: groups, Set.union group processed)
+
+let partition input =
+    let map = parseInput input;
+    let ids = generate 0 inc |> Seq.take (Map.count map) |> List.ofSeq;
+    Seq.fold (fun (groups, processed) node -> 
+                if Set.contains node processed then (groups, processed)
+                                               else processNextGroup groups processed node map)
+             ([], Set.empty)
+             ids
+    |> fst                
+
