@@ -28,7 +28,7 @@ let children = pstring "->" >>. FParsec.CharParsers.spaces >>. nameList
 let relation = pipe3 (nodeName .>> FParsec.CharParsers.spaces ) (pstring "(" >>. pint32 .>> pstring ")" .>> FParsec.CharParsers.spaces ) (opt children) 
                 (fun name weight children -> new Node(name, weight, children))
 
-let parseLines ln = newlines.Split ln |> Seq.map (parseOrException relation)
+let parseLines ln = newlinesRegex.Split ln |> Seq.map (parseOrException relation)
 
 let toMap (nodeList: Node seq) = Seq.map (fun (n : Node) -> (n.Name, n)) nodeList |> Map.ofSeq 
 

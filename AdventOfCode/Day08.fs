@@ -1046,7 +1046,7 @@ let parseLine =
             })
 
 let parse input =
-    newlines.Split input |> Seq.map (parseOrException parseLine)
+    newlinesRegex.Split input |> Seq.map (parseOrException parseLine)
     
 let step registers (instruction : Instruction) = 
     let target = getOrDefault(registers, instruction.target, 0);

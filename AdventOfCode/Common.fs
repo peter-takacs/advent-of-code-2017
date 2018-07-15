@@ -4,8 +4,8 @@ open System.Text.RegularExpressions
 open FSharpx.Collections
 open FParsec
 
-let newlines = new Regex("\r?\n")
-let spaces = new Regex("\s+")
+let newlinesRegex = new Regex("\r?\n")
+let spacesRegex = new Regex("\s+")
 
 let isAsciiIdStart c =
     isAsciiLetter c || c = '_'
@@ -16,8 +16,8 @@ let isAsciiIdContinue c =
 let parsename : Parser<string, unit> = identifier (IdentifierOptions(isAsciiIdStart = isAsciiIdStart, isAsciiIdContinue = isAsciiIdContinue))
 
 let toTable (input :string ) =
-    newlines.Split input |>    
-    Seq.map (spaces.Split >> List.ofSeq)    
+    newlinesRegex.Split input |>    
+    Seq.map (spacesRegex.Split >> List.ofSeq)    
 
 let flatten seqOfSeq = seq { for seq in seqOfSeq do yield! seq}
 
