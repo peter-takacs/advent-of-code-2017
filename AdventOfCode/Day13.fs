@@ -67,6 +67,10 @@ let toMap firewall =
     firewall |>
     Seq.fold (fun state (depth, range) -> Map.add depth {range = range; currentPosition = 0; isAscending = true} state) Map.empty
 
+let toRangeMap firewall =         
+    firewall |>
+    Seq.fold (fun state (depth, range) -> Map.add depth range state) Map.empty
+
 let updateLayer layer: Layer =
     match layer with
     | {Layer.range = range; Layer.currentPosition = current; isAscending = _} when current = range - 1 -> {range = range; currentPosition = current - 1; isAscending = false};
@@ -84,18 +88,25 @@ let generateTicks startingState count =
 
 let computeSeverity delay input =
     let layers = parseInput input
-    let count = maxLayer layers + delay
+    let count = maxLayer layers
     let firewall = toMap layers
     Seq.init count id |>
-    Seq.zip (generateTicks firewall count) |>
+    Seq.zip (generateTicks firewall (count+delay) |> Seq.skip delay) |>
     Seq.map (fun (layers, tick) -> 
-        match getOrDefault(layers, tick - delay, {Layer.range = 0; Layer.currentPosition = 0; Layer.isAscending = false}) with
+        match getOrDefault(layers, tick, {Layer.range = 0; Layer.currentPosition = 0; Layer.isAscending = false}) with
         | {Layer.range = range; Layer.currentPosition = 0;} -> tick * range
         | _ -> 0 ) |>
     Seq.sum
 
+let isTop range time =
+    time % (2 * (range - 1)) = 0
+
+let isCaught delay ranges = 
+    Map.map (fun depth range -> isTop range (delay + depth)) ranges 
+    |> Map.toList |> List.map snd |> Seq.exists (eq true)
+
 let findFirstHole input = 
     Seq.initInfinite id |>
-    Seq.map (fun x -> computeSeverity x input) |>
-    Seq.findIndex (eq 0)
+    Seq.map (fun x -> isCaught x input) |>
+    Seq.findIndex (eq false)
     
